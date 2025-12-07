@@ -173,7 +173,7 @@ function startIdleMessages() {
     if (document.activeElement === msg) return;
 
     autoMessage();
-  }, 15000);
+  }, 30000);
 }
 
 async function autoMessage() {
@@ -184,7 +184,7 @@ async function autoMessage() {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({
-      message: "Dimmi una curiosità breve o una barzelletta molto corta."
+      message: "Dimmi una curiosità breve."
     })
   });
 
