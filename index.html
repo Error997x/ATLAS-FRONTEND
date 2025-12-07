@@ -98,6 +98,11 @@ const replyBox = document.getElementById("replyBox");
 const eyeLeft = document.getElementById("eye-left");
 const eyeRight = document.getElementById("eye-right");
 
+
+// ------------------------
+//   INVIO MESSAGGI NORMALI
+// ------------------------
+
 async function sendMessage() {
   const text = msg.value.trim();
   if (!text) return;
@@ -127,6 +132,7 @@ async function sendMessage() {
       clearInterval(speakInterval);
       mouth.style.height = "8px";
       face.style.animation = "idle 3s ease-in-out infinite";
+      speaking = false;
     }, 2600);
 
   } catch (e) {
@@ -139,6 +145,11 @@ msg.addEventListener("keydown", e => {
   if (e.key === "Enter") sendMessage();
 });
 
+
+// ------------------------
+//   MOVIMENTO OCCHI
+// ------------------------
+
 document.addEventListener("mousemove", e => {
   const r = face.getBoundingClientRect();
   const cx = r.left + r.width/2;
@@ -148,7 +159,57 @@ document.addEventListener("mousemove", e => {
   eyeLeft.style.transform = `translate(${dx*15}px, ${dy*10}px)`;
   eyeRight.style.transform = `translate(${dx*15}px, ${dy*10}px)`;
 });
+
+
+// ------------------------
+//   AUTO MESSAGGI 15 SECONDI
+// ------------------------
+
+let speaking = false;
+
+function startIdleMessages() {
+  setInterval(() => {
+    if (speaking) return;
+    if (document.activeElement === msg) return;
+
+    autoMessage();
+  }, 15000);
+}
+
+async function autoMessage() {
+  speaking = true;
+  face.style.animation = "thinking 1s ease-in-out infinite";
+
+  const res = await fetch("https://atlas-v0iq.onrender.com/chat", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      message: "Dimmi una curiosità breve o una barzelletta molto corta."
+    })
+  });
+
+  const data = await res.json();
+
+  face.style.animation = "speaking 0.3s ease-in-out alternate infinite";
+
+  let speakInterval = setInterval(() => {
+    mouth.style.height = (8 + Math.random()*28) + "px";
+  }, 110);
+
+  replyBox.innerText = data.reply;
+
+  setTimeout(() => {
+    clearInterval(speakInterval);
+    mouth.style.height = "8px";
+    face.style.animation = "idle 3s ease-in-out infinite";
+    speaking = false;
+  }, 2600);
+}
+
+// avvia auto-messaggi
+startIdleMessages();
 </script>
 
 </body>
 </html>
+
