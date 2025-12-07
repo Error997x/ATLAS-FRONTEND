@@ -2,84 +2,188 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Atlas</title>
+  <title>Atlas 2.0</title>
   <style>
     body {
       margin:0;
-      background:#000;
+      background:#020202;
+      background-image:
+        radial-gradient(circle at top, #330000 0, transparent 60%),
+        radial-gradient(circle at bottom, #000000 0, #020202 70%);
       display:flex;
       flex-direction:column;
       justify-content:center;
       align-items:center;
       height:100vh;
-      color:white;
-      font-family:sans-serif;
+      color:#f5f5f5;
+      font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      position:relative;
+      overflow:hidden;
     }
+
+    /* titolo in alto a sinistra */
+    #logo {
+      position:absolute;
+      top:16px;
+      left:20px;
+      font-size:18px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      color:#ff0000;
+      font-weight:700;
+      text-shadow:0 0 12px rgba(255,0,0,0.7);
+    }
+
+    #face-wrapper {
+      position:relative;
+    }
+
     #face {
       width:260px;
       height:260px;
       border-radius:50%;
-      border:4px solid white;
+      border:3px solid #ff0000;
       position:relative;
-      animation: idle 3s ease-in-out infinite;
+      animation: idle 3s ease-in-out infinite, glowPulse 2.4s ease-in-out infinite;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow:0 0 32px rgba(255,0,0,0.4);
+      background:radial-gradient(circle at 30% 20%, #330000 0, #050000 55%, #020202 100%);
     }
+
     .eye {
-      width:18px;
-      height:45px;
-      background:white;
+      width:26px;
+      height:50px;
+      background:#111;
       border-radius:999px;
       position:absolute;
       top:80px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
+      box-shadow:0 0 8px rgba(255,0,0,0.4);
     }
-    #eye-left { left:75px; }
-    #eye-right { right:75px; }
+    #eye-left  { left:65px; }
+    #eye-right { right:65px; }
+
+    .pupil {
+      width:10px;
+      height:22px;
+      border-radius:999px;
+      background:#ff0000;
+      box-shadow:0 0 10px rgba(255,0,0,0.8);
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+
     #mouth {
-      width:70px;
-      height:8px;
-      background:white;
+      width:90px;
+      height:10px;
+      background:#ff0000;
       border-radius:999px;
       position:absolute;
-      bottom:70px;
+      bottom:65px;
       left:50%;
       transform:translateX(-50%);
-      transition: height 0.08s;
+      transition: height 0.08s, border-radius 0.12s;
+      box-shadow:0 0 12px rgba(255,0,0,0.6);
     }
-    @keyframes idle {0%{transform:scale(1);}50%{transform:scale(1.03);}100%{transform:scale(1);}}
-    @keyframes thinking {0%{transform:scale(1);}50%{transform:scale(1.07);}100%{transform:scale(1);}}
-    @keyframes speaking {0%{transform:scale(1);}100%{transform:scale(1.03);}}
+
+    @keyframes idle {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes thinking {
+      0%   { transform: scale(1) rotate(0deg); }
+      50%  { transform: scale(1.07) rotate(1.5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes speaking {
+      0%   { transform: scale(1) rotate(-1deg); }
+      100% { transform: scale(1.03) rotate(1deg); }
+    }
+
+    @keyframes blink {
+      0% { height:50px; }
+      10% { height:6px; }
+      20% { height:50px; }
+      100% { height:50px; }
+    }
+
+    @keyframes glowPulse {
+      0%   { box-shadow:0 0 26px rgba(255,0,0,0.25); }
+      50%  { box-shadow:0 0 42px rgba(255,0,0,0.7); }
+      100% { box-shadow:0 0 26px rgba(255,0,0,0.25); }
+    }
+
     #input {
       margin-top:30px;
       display:flex;
       gap:10px;
+      z-index:2;
     }
+
     #msg {
       padding:10px 14px;
       border-radius:999px;
-      border:none;
+      border:1px solid #ff0000;
       outline:none;
       width:260px;
+      background:#050505;
+      color:#f5f5f5;
+      box-shadow:0 0 10px rgba(255,0,0,0.2);
     }
+
     #send {
       padding:10px 18px;
       border-radius:999px;
       border:none;
       cursor:pointer;
+      background:#ff0000;
+      color:#fff;
+      font-weight:600;
+      box-shadow:0 0 12px rgba(255,0,0,0.6);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
+
+    #send:hover {
+      transform:translateY(-1px);
+      box-shadow:0 0 16px rgba(255,0,0,0.9);
+      background:#ff3333;
+    }
+
     #replyBox {
       margin-top:20px;
-      max-width:400px;
+      max-width:420px;
       text-align:center;
       font-size:18px;
-      opacity:0.85;
+      opacity:0.9;
+      padding:10px 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,0,0,0.5);
+      background:rgba(10,0,0,0.7);
+      box-shadow:0 0 18px rgba(255,0,0,0.3);
+      min-height:42px;
     }
   </style>
 </head>
+
 <body>
 
-  <div id="face">
-    <div id="eye-left" class="eye"></div>
-    <div id="eye-right" class="eye"></div>
-    <div id="mouth"></div>
+  <div id="logo">ATLAS 2.0</div>
+
+  <div id="face-wrapper">
+    <div id="face">
+      <div id="eye-left" class="eye">
+        <div id="pupil-left" class="pupil"></div>
+      </div>
+      <div id="eye-right" class="eye">
+        <div id="pupil-right" class="pupil"></div>
+      </div>
+      <div id="mouth"></div>
+    </div>
   </div>
 
   <div id="input">
@@ -97,19 +201,54 @@ const mouth = document.getElementById("mouth");
 const replyBox = document.getElementById("replyBox");
 const eyeLeft = document.getElementById("eye-left");
 const eyeRight = document.getElementById("eye-right");
+const pupilLeft = document.getElementById("pupil-left");
+const pupilRight = document.getElementById("pupil-right");
+
+let speaking = false;
+
+/* -------------------------
+     STATI OCCHI E BOCCA
+   ------------------------- */
+function setIdleFace() {
+  face.style.animation = "idle 3s ease-in-out infinite, glowPulse 2.4s ease-in-out infinite";
+  pupilLeft.style.background = "#ff0000";
+  pupilRight.style.background = "#ff0000";
+  mouth.style.height = "10px";
+  mouth.style.borderRadius = "999px";
+}
+
+function setThinkingFace() {
+  face.style.animation = "thinking 1s ease-in-out infinite, glowPulse 2.4s ease-in-out infinite";
+  pupilLeft.style.background = "#ff4d4d";
+  pupilRight.style.background = "#ff4d4d";
+}
+
+function setSpeakingFace(isJoke) {
+  face.style.animation = "speaking 0.18s ease-in-out alternate infinite, glowPulse 2.4s ease-in-out infinite";
+  pupilLeft.style.background = "#ff8080";
+  pupilRight.style.background = "#ff8080";
+  mouth.style.borderRadius = isJoke ? "40px" : "999px";
+}
 
 
-// ------------------------
-//   INVIO MESSAGGI NORMALI
-// ------------------------
+/* -------------------------
+     INVIO MESSAGGI UTENTE
+   ------------------------- */
 
 async function sendMessage() {
   const text = msg.value.trim();
   if (!text) return;
+
   msg.value = "";
   replyBox.innerText = "";
+  speaking = true;
+  setThinkingFace();
 
-  face.style.animation = "thinking 1s ease-in-out infinite";
+  // piccolo rimbalzo quando arriva una richiesta
+  face.style.transform = "translateY(-4px)";
+  setTimeout(() => {
+    face.style.transform = "translateY(0)";
+  }, 120);
 
   try {
     const res = await fetch("https://atlas-v0iq.onrender.com/chat", {
@@ -120,23 +259,23 @@ async function sendMessage() {
 
     const data = await res.json();
 
-    face.style.animation = "speaking 0.3s ease-in-out alternate infinite";
-
+    setSpeakingFace(false);
     let speakInterval = setInterval(() => {
-      mouth.style.height = (8 + Math.random()*28) + "px";
-    }, 110);
+      mouth.style.height = (10 + Math.random()*26) + "px";
+    }, 90);
 
     replyBox.innerText = data.reply;
 
     setTimeout(() => {
       clearInterval(speakInterval);
-      mouth.style.height = "8px";
-      face.style.animation = "idle 3s ease-in-out infinite";
+      mouth.style.height = "10px";
       speaking = false;
+      setIdleFace();
     }, 2600);
 
-  } catch (e) {
-    face.style.animation = "idle 3s ease-in-out infinite";
+  } catch(e) {
+    speaking = false;
+    setIdleFace();
   }
 }
 
@@ -146,32 +285,67 @@ msg.addEventListener("keydown", e => {
 });
 
 
-// ------------------------
-//   MOVIMENTO OCCHI
-// ------------------------
-
+/* -------------------------
+        OCCHI E PUPILLE
+   ------------------------- */
 document.addEventListener("mousemove", e => {
   const r = face.getBoundingClientRect();
   const cx = r.left + r.width/2;
   const cy = r.top + r.height/2;
-  const dx = (e.clientX - cx) / (r.width);
-  const dy = (e.clientY - cy) / (r.height);
-  eyeLeft.style.transform = `translate(${dx*15}px, ${dy*10}px)`;
-  eyeRight.style.transform = `translate(${dx*15}px, ${dy*10}px)`;
+  const dx = (e.clientX - cx) / r.width;
+  const dy = (e.clientY - cy) / r.height;
+
+  const pupilOffsetX = dx * 8;
+  const pupilOffsetY = dy * 6;
+
+  pupilLeft.style.transform = `translate(${pupilOffsetX}px, ${pupilOffsetY}px)`;
+  pupilRight.style.transform = `translate(${pupilOffsetX}px, ${pupilOffsetY}px)`;
 });
 
 
-// ------------------------
-//   AUTO MESSAGGI 30 SECONDI
-// ------------------------
+/* -------------------------
+     BLINK NATURALE
+   ------------------------- */
+function blink() {
+  eyeLeft.style.animation = "blink 0.18s ease-out";
+  eyeRight.style.animation = "blink 0.18s ease-out";
 
-let speaking = false;
+  setTimeout(() => {
+    eyeLeft.style.animation = "";
+    eyeRight.style.animation = "";
+  }, 200);
 
+  setTimeout(blink, 3000 + Math.random()*4000);
+}
+blink();
+
+
+/* -------------------------
+   MICRO MOVIMENTI TESTA
+   ------------------------- */
+function headMovement() {
+  const x = (Math.random() - 0.5) * 10;
+  const y = (Math.random() - 0.5) * 8;
+  const rot = (Math.random() - 0.5) * 4;
+
+  face.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+  setTimeout(() => {
+    face.style.transform = "translate(0px,0px) rotate(0deg)";
+  }, 420);
+
+  setTimeout(headMovement, 5000 + Math.random()*3000);
+}
+headMovement();
+
+
+/* -------------------------
+   AUTO MESSAGGI 30s
+   CURIOSITÀ + BATTUTE MIX
+   ------------------------- */
 function startIdleMessages() {
-  // prima curiosità DOPO 30 secondi, non subito
   setTimeout(() => {
     autoMessage();
-    // poi ogni 30 secondi
     setInterval(() => {
       if (speaking) return;
       if (document.activeElement === msg) return;
@@ -180,35 +354,59 @@ function startIdleMessages() {
   }, 30000);
 }
 
-async function autoMessage() {
-  speaking = true;
-  face.style.animation = "thinking 1s ease-in-out infinite";
-
-  const res = await fetch("https://atlas-v0iq.onrender.com/chat", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({
-      message: "Dimmi una curiosità scientifica o informatica reale, molto breve, senza battute o tono umoristico."
-    })
-  });
-
-  const data = await res.json();
-
-  face.style.animation = "speaking 0.3s ease-in-out alternate infinite";
-
-  let speakInterval = setInterval(() => {
-    mouth.style.height = (8 + Math.random()*28) + "px";
-  }, 110);
-
-  replyBox.innerText = data.reply;
-
-  setTimeout(() => {
-    clearInterval(speakInterval);
-    mouth.style.height = "8px";
-    face.style.animation = "idle 3s ease-in-out infinite";
-    speaking = false;
-  }, 2600);
+function buildAutoPrompt() {
+  const mode = Math.random();
+  if (mode < 0.33) {
+    return "Dimmi una curiosità scientifica reale, molto breve e chiara.";
+  } else if (mode < 0.66) {
+    return "Dimmi una curiosità informatica o sul mondo hacker, molto breve.";
+  } else {
+    return "Dimmi una battuta breve e pulita, meglio se a tema informatico o hacker.";
+  }
 }
 
+async function autoMessage() {
+  speaking = true;
+  const prompt = buildAutoPrompt();
+  const isJoke = prompt.includes("battuta");
+
+  setThinkingFace();
+
+  try {
+    const res = await fetch("https://atlas-v0iq.onrender.com/chat", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ message: prompt })
+    });
+
+    const data = await res.json();
+
+    setSpeakingFace(isJoke);
+    let speakInterval = setInterval(() => {
+      const base = isJoke ? 16 : 10;
+      const amp = isJoke ? 32 : 24;
+      mouth.style.height = (base + Math.random()*amp) + "px";
+    }, isJoke ? 70 : 90);
+
+    replyBox.innerText = data.reply;
+
+    setTimeout(() => {
+      clearInterval(speakInterval);
+      mouth.style.height = "10px";
+      speaking = false;
+      setIdleFace();
+    }, isJoke ? 3200 : 2600);
+
+  } catch(e) {
+    speaking = false;
+    setIdleFace();
+  }
+}
+
+setIdleFace();
 startIdleMessages();
+</script>
+
+</body>
+</html>
 
