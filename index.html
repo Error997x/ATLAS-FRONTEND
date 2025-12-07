@@ -162,17 +162,21 @@ document.addEventListener("mousemove", e => {
 
 
 // ------------------------
-//   AUTO MESSAGGI 15 SECONDI
+//   AUTO MESSAGGI 30 SECONDI
 // ------------------------
 
 let speaking = false;
 
 function startIdleMessages() {
-  setInterval(() => {
-    if (speaking) return;
-    if (document.activeElement === msg) return;
-
+  // prima curiosità DOPO 30 secondi, non subito
+  setTimeout(() => {
     autoMessage();
+    // poi ogni 30 secondi
+    setInterval(() => {
+      if (speaking) return;
+      if (document.activeElement === msg) return;
+      autoMessage();
+    }, 30000);
   }, 30000);
 }
 
@@ -184,7 +188,7 @@ async function autoMessage() {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({
-      message: "Dimmi una curiosità breve."
+      message: "Dimmi una curiosità scientifica o informatica reale, molto breve, senza battute o tono umoristico."
     })
   });
 
@@ -206,10 +210,5 @@ async function autoMessage() {
   }, 2600);
 }
 
-// avvia auto-messaggi
 startIdleMessages();
-</script>
-
-</body>
-</html>
 
